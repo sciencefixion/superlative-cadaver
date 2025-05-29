@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Play Game{% endblock %}
+
+{% block content %}
+<h2>Playing: {{ game.name }}</h2>
+<p>Round {{ game.current_round }} of {{ game.rounds }}</p>
+<p>Current Player: {{ session.get('player_name', 'Unknown') }}</p>
+
+<div class="contribution-form">
+  <h3>Player {{ current_player_position }}'s Turn</h3>
+
+  {% if previous_contribution %}
+  <div class="previous-contribution">
+    <h4>Last part of previous contribution:</h4>
+    <div class="text-fragment">"{{ previous_contribution }}"</div>
+  </div>
+  {% endif %}
+
+  <form method="POST">
+    <div class="form-group">
+      <label for="content">Your Contribution:</label>
+      <textarea name="content" id="content" rows="5" required placeholder="Continue the story..."></textarea>
+    </div>
+
+    <input type="hidden" name="player_position" value="{{ current_player_position }}">
+    <button type="submit" class="btn">Submit</button>
+  </form>
+</div>
+{% endblock %}

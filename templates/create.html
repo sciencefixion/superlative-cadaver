@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Create Game{% endblock %}
+
+{% block content %}
+<h2>Create a New Hot Seat Game</h2>
+<form method="POST" id="game-form">
+  <div class="form-group">
+    <label for="game_name">Game Name:</label>
+    <input type="text" id="game_name" name="game_name" required>
+  </div>
+
+  <div class="form-group">
+    <label for="max_players">Number of Players:</label>
+    <select id="max_players" name="max_players" required>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="rounds">Number of Rounds:</label>
+    <select id="rounds" name="rounds" required>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+  </div>
+
+  <div id="players-container">
+    <h3>Player Names</h3>
+    <div class="form-group player-name-group">
+      <label>Player 1:</label>
+      <input type="text" name="player_name[]" required>
+    </div>
+    <div class="form-group player-name-group">
+      <label>Player 2:</label>
+      <input type="text" name="player_name[]" required>
+    </div>
+  </div>
+
+  <button type="button" id="add-player" class="btn secondary">Add Another Player</button>
+  <button type="submit" class="btn">Create Game</button>
+</form>
+
+<script>
+  document.getElementById('max_players').addEventListener('change', function () {
+    const maxPlayers = parseInt(this.value);
+    const playerGroups = document.querySelectorAll('.player-name-group');
+
+    playerGroups.forEach((group, index) => {
+      group.style.display = index < maxPlayers ? 'block' : 'none';
+      group.querySelector('input').required = index < maxPlayers;
+    });
+
+    document.getElementById('add-player').style.display =
+      playerGroups.length < maxPlayers ? 'inline-block' : 'none';
+  });
+
+  document.getElementById('add-player').addEventListener('click', function () {
+    const container = document.getElementById('players-container');
+    const count = document.querySelectorAll('.player-name-group').length + 1;
+    const maxPlayers = parseInt(document.getElementById('max_players').value);
+
+    if (count > maxPlayers) return;
+
+    const newGroup = document.createElement('div');
+    newGroup.className = 'form-group player-name-group';
+    newGroup.innerHTML = `
+        <label>Player ${count}:</label>
+        <input type="text" name="player_name[]" required>
+    `;
+    container.appendChild(newGroup);
+
+    if (count >= maxPlayers) {
+      this.style.display = 'none';
+    }
+  });
+</script>
+{% endblock %}
