@@ -18,7 +18,7 @@ def client():
 
 @pytest.fixture
 def sample_game(client):
-    game = Game(name="Test Game", max_players=3, rounds=2))
+    game = Game(name="Test Game", max_players=3, rounds=2)
     db.session.add(game)
     db.session.commit()
     return game
