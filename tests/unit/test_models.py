@@ -1,5 +1,5 @@
 from app import db
-from models import Game, Player, Contribution
+from app.models import Game, Player, Contribution
 from datetime import datetime
 
 def test_game_creation(sample_game):

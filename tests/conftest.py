@@ -1,27 +1,33 @@
 import pytest
-from app import app, db
-from models import Game, Player, Contribution
-import os
+from app import create_app
+from app.extensions import db
+from app.models import Game, Player, Contribution
 
 @pytest.fixture
-def client():
-  app.config['TESTING'] = True
-  app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-  app.config['WTF_CSRF_ENABLED'] = False
+def app():
+    app = create_app()
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
-  with app.test_client() as client:
     with app.app_context():
-      db.create_all()
-      yield client
-      with app.app_context():
+        db.create_all()
+
+    yield app
+
+    with app.app_context():
         db.drop_all()
 
 @pytest.fixture
-def sample_game(client):
-    game = Game(name="Test Game", max_players=3, rounds=2)
-    db.session.add(game)
-    db.session.commit()
-    return game
+def client(app):
+    return app.test_client()
+
+@pytest.fixture
+def sample_game(app):
+    with app.app_context():
+        game = Game(name="Test Game", max_players=3, rounds=2)
+        db.session.add(game)
+        db.session.commit()
+        return game
 
 @pytest.fixture
 def sample_players(sample_game):
