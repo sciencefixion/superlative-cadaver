@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Playing: {{ game.name }}</h2>
+<p>Round {{ game.current_round }} of {{ game.rounds }}</p>
+<p>Players: {{ game.current_players }}/{{ game.max_players }}</p>
+
+{% if is_player_turn %}
+<div class="contribution-form">
+  <h3>Your Turn (Player {{ player_position }})</h3>
+
+  {% if previous_contributions %}
+  <div class="previous-contributions">
+    <h4>Previous Round Contributions:</h4>
+    {% for contrib in previous_contributions %}
+    <div class="contribution">
+      <p>Player {{ contrib.player_position }}:</p>
+      <div class="text-contribution">{{ contrib.content }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="POST">
+    <div class="form-group">
+      <label for="content">Your Contribution:</label>
+      <textarea name="content" id="content" rows="5" required placeholder="Continue the story..."></textarea>
+    </div>
+    <button type="submit" class="btn">Submit</button>
+  </form>
+</div>
+{% else %}
+  <div class="waiting">
+    <h3>Waiting for Player {{ current_player_number }}'s turn</h3>
+    <p>It's currently Player {{ current_player_number }}'s turn to contribute.</p>
+    {% if player_position %}
+      <p>You are Player {{ player_position }}.</p>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
